@@ -1,0 +1,8 @@
+defaults:
+  - model: model
+  - dataset: data
+  - eval: eval
+
+
+seed: 116
+device: auto

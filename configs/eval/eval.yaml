@@ -1,0 +1,7 @@
+split: val
+max_samples: 100   # set to null to evaluate full split
+print_examples: 5
+progress_every: 50
+report_path: eval_report.json
+metrics:
+  - accuracy

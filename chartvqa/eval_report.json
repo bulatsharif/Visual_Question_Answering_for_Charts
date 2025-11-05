@@ -1,0 +1,55 @@
+{
+  "dataset": "HuggingFaceM4/ChartQA",
+  "split": "val",
+  "model": "dandelin/vilt-b32-finetuned-vqa",
+  "samples_evaluated": 100,
+  "correct": 7,
+  "accuracy": 0.07,
+  "examples": [
+    {
+      "idx": 0,
+      "question": "What's the color of graph with 56 as the highest value?",
+      "ground_truth": [
+        "blue"
+      ],
+      "prediction": "yellow",
+      "correct": false
+    },
+    {
+      "idx": 1,
+      "question": "In which year the difference between blue and green graph 1?",
+      "ground_truth": [
+        "2018"
+      ],
+      "prediction": "2012",
+      "correct": false
+    },
+    {
+      "idx": 2,
+      "question": "What does the blue line represent?",
+      "ground_truth": [
+        "not too much/not at all"
+      ],
+      "prediction": "train",
+      "correct": false
+    },
+    {
+      "idx": 3,
+      "question": "What is the max value of blue line?",
+      "ground_truth": [
+        "0.72"
+      ],
+      "prediction": "5",
+      "correct": false
+    },
+    {
+      "idx": 4,
+      "question": "What's the percentage of respondents who say Job is a top priority for the president and Congress in 2016?",
+      "ground_truth": [
+        "68"
+      ],
+      "prediction": "50",
+      "correct": false
+    }
+  ]
+}

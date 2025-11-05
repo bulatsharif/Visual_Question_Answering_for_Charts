@@ -1,0 +1,13 @@
+[project]
+name = "visual-question-answering-for-charts"
+version = "0.1.0"
+description = "Visual Question Answering For Charts - Intro to Computer Vision Project"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+	"torch",
+	"transformers>=4.42.0",
+	"datasets>=2.18.0",
+	"Pillow>=10.0.0",
+	"hydra-core>=1.3.2",
+]
