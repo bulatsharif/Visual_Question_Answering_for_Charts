@@ -1,55 +1,810 @@
 {
   "dataset": "HuggingFaceM4/ChartQA",
   "split": "val",
-  "model": "dandelin/vilt-b32-finetuned-vqa",
+  "model": "HuggingFaceTB/SmolVLM-500M-Instruct",
   "samples_evaluated": 100,
-  "correct": 7,
-  "accuracy": 0.07,
+  "correct": 28,
+  "accuracy": 0.28,
   "examples": [
     {
-      "idx": 0,
       "question": "What's the color of graph with 56 as the highest value?",
       "ground_truth": [
         "blue"
       ],
-      "prediction": "yellow",
-      "correct": false
+      "prediction": "green",
+      "is_correct": false
     },
     {
-      "idx": 1,
       "question": "In which year the difference between blue and green graph 1?",
       "ground_truth": [
         "2018"
       ],
-      "prediction": "2012",
-      "correct": false
+      "prediction": "2011",
+      "is_correct": false
     },
     {
-      "idx": 2,
       "question": "What does the blue line represent?",
       "ground_truth": [
         "not too much/not at all"
       ],
-      "prediction": "train",
-      "correct": false
+      "prediction": "the belief that the u.s. considers other countries’ interests in foreign policy returns to 2007 level",
+      "is_correct": false
     },
     {
-      "idx": 3,
       "question": "What is the max value of blue line?",
       "ground_truth": [
         "0.72"
       ],
-      "prediction": "5",
-      "correct": false
+      "prediction": "72",
+      "is_correct": false
     },
     {
-      "idx": 4,
       "question": "What's the percentage of respondents who say Job is a top priority for the president and Congress in 2016?",
       "ground_truth": [
         "68"
       ],
-      "prediction": "50",
-      "correct": false
+      "prediction": "62",
+      "is_correct": false
+    },
+    {
+      "question": "Which line has the lowest value of 71%?",
+      "ground_truth": [
+        "economy"
+      ],
+      "prediction": "the line for jobs",
+      "is_correct": false
+    },
+    {
+      "question": "What is the unfavourable value in 2014?",
+      "ground_truth": [
+        "64"
+      ],
+      "prediction": "64",
+      "is_correct": true
+    },
+    {
+      "question": "What is the median value of favourable line in the graph?",
+      "ground_truth": [
+        "40"
+      ],
+      "prediction": "40",
+      "is_correct": true
+    },
+    {
+      "question": "Which answer response has the highest value on this graph?",
+      "ground_truth": [
+        "disapprove"
+      ],
+      "prediction": "obama’s job approval rating has been relatively stable over the past year. in january, 43 approved of obama’s job performance, while",
+      "is_correct": false
+    },
+    {
+      "question": "How many data points on the disapprove line are above 50?",
+      "ground_truth": [
+        "2"
+      ],
+      "prediction": "4",
+      "is_correct": false
+    },
+    {
+      "question": "Which indicator remains all time lowest from Dec. 2008 to Sep. 2011?",
+      "ground_truth": [
+        "mostly good news"
+      ],
+      "prediction": "the mix of good and bad news",
+      "is_correct": false
+    },
+    {
+      "question": "How much value of 'Mostly bad news' increased from Jan. 2011 to Sept. 2011?",
+      "ground_truth": [
+        "37"
+      ],
+      "prediction": "the mix of good and bad news has changed little since the start of 2011. in september 2011, 61",
+      "is_correct": false
+    },
+    {
+      "question": "When does the red line reach the peak?",
+      "ground_truth": [
+        "44538"
+      ],
+      "prediction": "sept. 1",
+      "is_correct": false
+    },
+    {
+      "question": "What's the total sum of peak points of all three lines?",
+      "ground_truth": [
+        "155"
+      ],
+      "prediction": "131",
+      "is_correct": false
+    },
+    {
+      "question": "When does the yellow line reach the peak?",
+      "ground_truth": [
+        "44207"
+      ],
+      "prediction": "aug 2011",
+      "is_correct": false
+    },
+    {
+      "question": "What's the total sum of peak points of green and red lines?",
+      "ground_truth": [
+        "87"
+      ],
+      "prediction": "110",
+      "is_correct": false
+    },
+    {
+      "question": "What's the lowest value of yellow line?",
+      "ground_truth": [
+        "19"
+      ],
+      "prediction": "33",
+      "is_correct": false
+    },
+    {
+      "question": "What's the difference of value of highiest value of red and lowest value of green line?",
+      "ground_truth": [
+        "79"
+      ],
+      "prediction": "the public’s overall rating of the economy has fallen from 68 in december 2010 to 33 today. the share",
+      "is_correct": false
+    },
+    {
+      "question": "What is the colour of oppose in the graph?",
+      "ground_truth": [
+        "light blue"
+      ],
+      "prediction": "blue",
+      "is_correct": false
+    },
+    {
+      "question": "How many times there is 44 value in the Favor?",
+      "ground_truth": [
+        "3"
+      ],
+      "prediction": "5 times",
+      "is_correct": false
+    },
+    {
+      "question": "What is the percentage of people who are dissatisfied with Spain's democracy?",
+      "ground_truth": [
+        "68"
+      ],
+      "prediction": "68",
+      "is_correct": true
+    },
+    {
+      "question": "What is the ratio of people who are dissatisfied and satisfied with Spain's democracy?",
+      "ground_truth": [
+        "2.125"
+      ],
+      "prediction": "68 are dissatisfied with democracy, while 32 are satisfied",
+      "is_correct": false
+    },
+    {
+      "question": "Is the Pie chart divided into 3 segment?",
+      "ground_truth": [
+        "yes"
+      ],
+      "prediction": "yes",
+      "is_correct": true
+    },
+    {
+      "question": "IS the value of No more then sum of Yes and Dk?",
+      "ground_truth": [
+        "yes"
+      ],
+      "prediction": "no (73), 17 yes",
+      "is_correct": false
+    },
+    {
+      "question": "What is the percentage of Iraqi dependents citizen?",
+      "ground_truth": [
+        "0.12"
+      ],
+      "prediction": "19",
+      "is_correct": false
+    },
+    {
+      "question": "What is the total percentage of Afghan applicants and Iraqi applicants?",
+      "ground_truth": [
+        "0.34"
+      ],
+      "prediction": "67",
+      "is_correct": false
+    },
+    {
+      "question": "Is the color of 53% segment light green?",
+      "ground_truth": [
+        "no"
+      ],
+      "prediction": "no",
+      "is_correct": true
+    },
+    {
+      "question": "What's the ratio of Lean Republican segment and Republican segment?",
+      "ground_truth": [
+        "0.7358"
+      ],
+      "prediction": "1.11",
+      "is_correct": false
+    },
+    {
+      "question": "What segment represent by dark grey color?",
+      "ground_truth": [
+        "both"
+      ],
+      "prediction": "neither/other",
+      "is_correct": false
+    },
+    {
+      "question": "What is the percentage of both and don't know?",
+      "ground_truth": [
+        "[4, 9]"
+      ],
+      "prediction": "12",
+      "is_correct": false
+    },
+    {
+      "question": "What's the value of leftmost bar in the bottom?",
+      "ground_truth": [
+        "12"
+      ],
+      "prediction": "the public is divided over whether police officers and the police need to continue making changes to give blacks equal rights with whites. about half (57) say that",
+      "is_correct": false
+    },
+    {
+      "question": "What is the largest value of dark green bar?",
+      "ground_truth": [
+        "0.92"
+      ],
+      "prediction": "69 of americans say that our country needs to continue making changes to give blacks equal rights with whites. just 29 say that our country",
+      "is_correct": false
+    },
+    {
+      "question": "Which country data analysed here?",
+      "ground_truth": [
+        "cuba"
+      ],
+      "prediction": "a majority of cubans (51) say they think cuba will become more democratic over the next several years, while 35 say it will become",
+      "is_correct": false
+    },
+    {
+      "question": "What is the maximum value of dark brown bar?",
+      "ground_truth": [
+        "7"
+      ],
+      "prediction": "5",
+      "is_correct": false
+    },
+    {
+      "question": "What's the percentage of very important bar for healthy eating habits?",
+      "ground_truth": [
+        "0.72"
+      ],
+      "prediction": "72",
+      "is_correct": false
+    },
+    {
+      "question": "What's the average of green bar median and light blue bar median?",
+      "ground_truth": [
+        "17"
+      ],
+      "prediction": "a majority of americans (72) say healthy eating habits are very important when it comes to improving a person’s chances of a long and healthy life",
+      "is_correct": false
+    },
+    {
+      "question": "What does dark blue bar represents?",
+      "ground_truth": [
+        "very important"
+      ],
+      "prediction": "americans are divided about the importance of healthy eating habits and physical exercise. about seven-in-ten (72) say healthy eating habits are very important",
+      "is_correct": false
+    },
+    {
+      "question": "What's the average value of all dark blue bars?",
+      "ground_truth": [
+        "62.75"
+      ],
+      "prediction": "61",
+      "is_correct": false
+    },
+    {
+      "question": "What does the color green indicate?",
+      "ground_truth": [
+        "support"
+      ],
+      "prediction": "the japanese public is divided over whether increasing japanese investment in developing countries is a good or bad thing for the countries it is being invested in. a 73",
+      "is_correct": false
+    },
+    {
+      "question": "What is the difference between the longest and the shortest green bar?",
+      "ground_truth": [
+        "7"
+      ],
+      "prediction": "the japanese public is divided on whether they support or oppose increasing japanese investment in developing countries. a 19 majority says they oppose increasing japanese investment in developing",
+      "is_correct": false
+    },
+    {
+      "question": "Which country has the highest percentage value of \"a lot\"?",
+      "ground_truth": [
+        "kenya"
+      ],
+      "prediction": "nigeria (68), south africa (62) and the u.s. (56)",
+      "is_correct": false
+    },
+    {
+      "question": "What is the maximum value of \"a lot\" among countries?",
+      "ground_truth": [
+        "0.69"
+      ],
+      "prediction": "in the u.s., 56 say ordinary citizens can do a lot to influence the government, while 42 say ordinary citizens can do",
+      "is_correct": false
+    },
+    {
+      "question": "How many bars are there in the graph?",
+      "ground_truth": [
+        "2"
+      ],
+      "prediction": "2",
+      "is_correct": true
+    },
+    {
+      "question": "What is the total sum of both the bars?",
+      "ground_truth": [
+        "7.81"
+      ],
+      "prediction": "10.47",
+      "is_correct": false
+    },
+    {
+      "question": "What's the value of United States?",
+      "ground_truth": [
+        "0.124"
+      ],
+      "prediction": "12.4",
+      "is_correct": false
+    },
+    {
+      "question": "What's the average value of Canada, Belgium and France?",
+      "ground_truth": [
+        "0.0277"
+      ],
+      "prediction": "2.79",
+      "is_correct": false
+    },
+    {
+      "question": "What is the death rate in the age group 5-14 years old?",
+      "ground_truth": [
+        "0.0034"
+      ],
+      "prediction": "0.34",
+      "is_correct": false
+    },
+    {
+      "question": "Find the median value of all the bars?",
+      "ground_truth": [
+        "0.68"
+      ],
+      "prediction": "0.68",
+      "is_correct": true
+    },
+    {
+      "question": "Which place shows the highest death rate?",
+      "ground_truth": [
+        "grenada"
+      ],
+      "prediction": "grenada",
+      "is_correct": true
+    },
+    {
+      "question": "Is the value of death rate in Denmark more then Croatia?",
+      "ground_truth": [
+        "no"
+      ],
+      "prediction": "no",
+      "is_correct": true
+    },
+    {
+      "question": "How many categories are there in the chart?",
+      "ground_truth": [
+        "3"
+      ],
+      "prediction": "3",
+      "is_correct": true
+    },
+    {
+      "question": "What's the average of two smallest bar?",
+      "ground_truth": [
+        "70.535"
+      ],
+      "prediction": "101.4",
+      "is_correct": false
+    },
+    {
+      "question": "How many bars are there in the graph?",
+      "ground_truth": [
+        "2"
+      ],
+      "prediction": "2",
+      "is_correct": true
+    },
+    {
+      "question": "What is the total add up value of Both the bars?",
+      "ground_truth": [
+        "59"
+      ],
+      "prediction": "60",
+      "is_correct": false
+    },
+    {
+      "question": "What denotes the light blue color bar?",
+      "ground_truth": [
+        "united states"
+      ],
+      "prediction": "ireland",
+      "is_correct": false
+    },
+    {
+      "question": "What's the average value of all bars in the chart?",
+      "ground_truth": [
+        "126.41"
+      ],
+      "prediction": "10.76",
+      "is_correct": false
+    },
+    {
+      "question": "What does the value 2122 represent?",
+      "ground_truth": [
+        "incidence"
+      ],
+      "prediction": "incidence",
+      "is_correct": true
+    },
+    {
+      "question": "What is the difference in the value between Incidence and Prevalence?",
+      "ground_truth": [
+        "1092"
+      ],
+      "prediction": "111",
+      "is_correct": false
+    },
+    {
+      "question": "Which age group has the highest value?",
+      "ground_truth": [
+        "20-24 years old"
+      ],
+      "prediction": "20-24 years old",
+      "is_correct": true
+    },
+    {
+      "question": "Find the average of the percentage value of bars greater than 1?",
+      "ground_truth": [
+        "1.608"
+      ],
+      "prediction": "1.08",
+      "is_correct": false
+    },
+    {
+      "question": "Which state shows the highest fertility rate?",
+      "ground_truth": [
+        "malawi"
+      ],
+      "prediction": "malawi",
+      "is_correct": true
+    },
+    {
+      "question": "Is the value of Malawi greater then sum of Netherlands and Africa?",
+      "ground_truth": [
+        "yes"
+      ],
+      "prediction": "yes",
+      "is_correct": true
+    },
+    {
+      "question": "What is the value of the largest bar?",
+      "ground_truth": [
+        "1715"
+      ],
+      "prediction": "1,715",
+      "is_correct": false
+    },
+    {
+      "question": "What is the difference between the largest bar and the smallest bar?",
+      "ground_truth": [
+        "1654"
+      ],
+      "prediction": "1,000",
+      "is_correct": false
+    },
+    {
+      "question": "Which country has its value 5.97%?",
+      "ground_truth": [
+        "india"
+      ],
+      "prediction": "india",
+      "is_correct": true
+    },
+    {
+      "question": "Find the total percentage of the three countries having values lower than India?",
+      "ground_truth": [
+        "0.07"
+      ],
+      "prediction": "3.13",
+      "is_correct": false
+    },
+    {
+      "question": "What is the value of longest bar?",
+      "ground_truth": [
+        "96"
+      ],
+      "prediction": "96",
+      "is_correct": true
+    },
+    {
+      "question": "How many bars have value less then 1?",
+      "ground_truth": [
+        "5"
+      ],
+      "prediction": "5",
+      "is_correct": true
+    },
+    {
+      "question": "Which country represent by pink bar?",
+      "ground_truth": [
+        "ethiopia"
+      ],
+      "prediction": "thailand",
+      "is_correct": false
+    },
+    {
+      "question": "What is the difference between red and blue bar?",
+      "ground_truth": [
+        "0.56"
+      ],
+      "prediction": "71.7",
+      "is_correct": false
+    },
+    {
+      "question": "How many response options are below 150 n mi?",
+      "ground_truth": [
+        "2"
+      ],
+      "prediction": "2",
+      "is_correct": true
+    },
+    {
+      "question": "What is the average of '24 hours' and '48 hours'?",
+      "ground_truth": [
+        "105.45"
+      ],
+      "prediction": "79.6 n mi",
+      "is_correct": false
+    },
+    {
+      "question": "Which year mentioned in the heading of the chart?",
+      "ground_truth": [
+        "1911"
+      ],
+      "prediction": "1911",
+      "is_correct": true
+    },
+    {
+      "question": "How many times political competition data bigger than political participation?",
+      "ground_truth": [
+        "7.02"
+      ],
+      "prediction": "3.1",
+      "is_correct": false
+    },
+    {
+      "question": "Find the value of green bar?",
+      "ground_truth": [
+        "1.45"
+      ],
+      "prediction": "1.45 million t",
+      "is_correct": false
+    },
+    {
+      "question": "How many times green bar greater than Agriculture bar?",
+      "ground_truth": [
+        "8.53"
+      ],
+      "prediction": "3.8",
+      "is_correct": false
+    },
+    {
+      "question": "What is the value shown for Australia?",
+      "ground_truth": [
+        "0.4368"
+      ],
+      "prediction": "43.68",
+      "is_correct": false
+    },
+    {
+      "question": "What is the average of bottom three bars?",
+      "ground_truth": [
+        "38.08"
+      ],
+      "prediction": "32.48",
+      "is_correct": false
+    },
+    {
+      "question": "What is color of the Age-standardized?",
+      "ground_truth": [
+        "cyan"
+      ],
+      "prediction": "green",
+      "is_correct": false
+    },
+    {
+      "question": "What is the value of the 50-69 years old?",
+      "ground_truth": [
+        "8.88"
+      ],
+      "prediction": "8.88",
+      "is_correct": true
+    },
+    {
+      "question": "The value is 40.49, find the category?",
+      "ground_truth": [
+        "kidney cancer"
+      ],
+      "prediction": "kidney cancer",
+      "is_correct": true
+    },
+    {
+      "question": "How many times stomach cancer bigger than Kidney cancer data?",
+      "ground_truth": [
+        "10.13"
+      ],
+      "prediction": "1.11",
+      "is_correct": false
+    },
+    {
+      "question": "Which two places mentioned in the chart?",
+      "ground_truth": [
+        "[madagascar, central europe]"
+      ],
+      "prediction": "madagascar, central europe",
+      "is_correct": false
+    },
+    {
+      "question": "How much times Madagascar greater than Central europe data?",
+      "ground_truth": [
+        "32"
+      ],
+      "prediction": "4.11",
+      "is_correct": false
+    },
+    {
+      "question": "What is the average maize yield in Syria?",
+      "ground_truth": [
+        "3.251"
+      ],
+      "prediction": "3.25 t",
+      "is_correct": false
+    },
+    {
+      "question": "Find the ratio of highest value and average of two lowest values?",
+      "ground_truth": [
+        "1.841359773"
+      ],
+      "prediction": "1.21",
+      "is_correct": false
+    },
+    {
+      "question": "What is Female-to-male ratio to time devoted to unpaid care work in Italy?",
+      "ground_truth": [
+        "3.37"
+      ],
+      "prediction": "3.37",
+      "is_correct": true
+    },
+    {
+      "question": "What is the average of the values lower than 3 and greater than 2?",
+      "ground_truth": [
+        "2.445"
+      ],
+      "prediction": "2.78",
+      "is_correct": false
+    },
+    {
+      "question": "What is the value of largest bar?",
+      "ground_truth": [
+        "396"
+      ],
+      "prediction": "396",
+      "is_correct": true
+    },
+    {
+      "question": "Is the add up value of Comoros,Nicargua,Australia,Belgium is gretaer then Laos?",
+      "ground_truth": [
+        "no"
+      ],
+      "prediction": "yes",
+      "is_correct": false
+    },
+    {
+      "question": "Which country has longest bar?",
+      "ground_truth": [
+        "malta"
+      ],
+      "prediction": "malta",
+      "is_correct": true
+    },
+    {
+      "question": "What is the difference of Sweden and Malta?",
+      "ground_truth": [
+        "7.49"
+      ],
+      "prediction": "4.4",
+      "is_correct": false
+    },
+    {
+      "question": "How many colors are used in the graph?",
+      "ground_truth": [
+        "1"
+      ],
+      "prediction": "1",
+      "is_correct": true
+    },
+    {
+      "question": "What is the sum of largest and smallest bar?",
+      "ground_truth": [
+        "159.85"
+      ],
+      "prediction": "155.7",
+      "is_correct": false
+    },
+    {
+      "question": "How many colors are represented in the bar??",
+      "ground_truth": [
+        "5"
+      ],
+      "prediction": "5",
+      "is_correct": true
+    },
+    {
+      "question": "What is the difference between Industry employment percentage in Iran and Kenya??",
+      "ground_truth": [
+        "26.38"
+      ],
+      "prediction": "28.7",
+      "is_correct": false
+    },
+    {
+      "question": "Which place shows the highest cases of guinea worm?",
+      "ground_truth": [
+        "south sudan"
+      ],
+      "prediction": "south sudan",
+      "is_correct": true
+    },
+    {
+      "question": "Is the sum of Senegal and Central African Republic more then Chad?",
+      "ground_truth": [
+        "no"
+      ],
+      "prediction": "yes",
+      "is_correct": false
+    },
+    {
+      "question": "How many colors are represented in the bar??",
+      "ground_truth": [
+        "8"
+      ],
+      "prediction": "7",
+      "is_correct": false
+    },
+    {
+      "question": "What's the average value of first two bars in the chart??",
+      "ground_truth": [
+        "0.33"
+      ],
+      "prediction": "0.27",
+      "is_correct": false
     }
   ]
 }

@@ -20,6 +20,7 @@ import hydra
 import wandb
 from datasets import load_dataset
 from transformers import ViltForQuestionAnswering, ViltProcessor
+import re
 
 
 def set_seed(seed: int):
@@ -32,6 +33,8 @@ def set_seed(seed: int):
 
 def prepare_device(device_cfg: str):
     if device_cfg == "auto":
+        if torch.backends.mps.is_available():
+            return torch.device("mps")
         return torch.device("cuda" if torch.cuda.is_available() else "cpu")
     return torch.device(device_cfg)
 
@@ -51,6 +54,90 @@ def _normalize_answer(ans: Any) -> List[str]:
         return out
     return [str(ans).strip().lower()]
 
+def _inference_vilt(model, processor, image: Image.Image, question: str, device: torch.device) -> str:
+    """Run inference for a single (image, question) pair using ViLT."""
+    encoding = processor(image, question, return_tensors="pt")
+    encoding = {k: v.to(device) for k, v in encoding.items()}
+
+    outputs = model(**encoding)
+    pred_idx = outputs.logits.argmax(-1).item()
+    pred_text = model.config.id2label.get(pred_idx, str(pred_idx)).strip().lower()
+    return pred_text
+
+def _inference_vision2seq(model, processor, image: Image.Image, question: str, device: torch.device) -> str:
+    """
+    Run inference for a single (image, question) pair using Vision2Seq models.
+    Assumes the model uses a chat-style prompt.
+    
+    Args:
+        model: The Vision2Seq model.
+        processor: The corresponding processor.
+        image: The input image (PIL Image).
+        question: The question string.
+        device: The torch device to run on.
+    Returns:
+        The generated answer string.
+    """
+    
+    
+    messages = [
+        {
+            "role": "user",
+            "content": [
+                {"type": "image"},
+                {"type": "text", "text": f"Answer the following question about the image: {question}"}
+            ]
+        },
+    ]
+    
+    prompt = processor.apply_chat_template(messages, add_generation_prompt=True)
+    inputs = processor(text=prompt, images=[image], return_tensors="pt")
+    inputs = inputs.to(device)
+    
+    
+    
+    
+    generated_ids = model.generate(**inputs, max_new_tokens=32)
+    generated_texts = processor.batch_decode(
+        generated_ids,
+        skip_special_tokens=True,
+    )
+
+    raw = generated_texts[0]
+    # Strategy:
+    # 1. Find the last occurrence of 'assistant:' (lowercase to be safe)
+    # 2. Take everything after it until end.
+    # 3. Remove any leading whitespace/newlines.
+    # 4. Strip common trailing stop punctuation or residual prompt echoes.
+    # 5. Collapse internal whitespace.
+    lower_raw = raw.lower()
+    key = 'assistant:'
+    pos = lower_raw.rfind(key)
+    if pos == -1:
+        return ""
+    answer_fragment = raw[pos + len(key):].strip()
+    # Remove a leading comma or period if model added punctuation right after colon
+    answer_fragment = re.sub(r'^[,.:\s]+', '', answer_fragment)
+    # If the model echoed the entire instruction again, split on common delimiters.
+    # Heuristic: take first sentence/clause before double newline or line break.
+    answer_fragment = answer_fragment.split('\n')[0].strip()
+    # Remove trailing artifacts like stray prompt words
+    # Example pattern: "green.," -> "green"
+    answer_fragment = re.sub(r'[\s]*[.,]+$', '', answer_fragment)
+    # Keep only the first token if it appears to be a single-word answer (common for ChartQA)
+    # but avoid cutting if looks like a phrase containing spaces and digits.
+    simple_match = re.match(r'^[A-Za-z]+$', answer_fragment)
+    if not simple_match:
+        # If sentence contains multiple words, we might still want first word when others look like prompt residue.
+        # Example: "green. answer the following question ..." -> take first word before such phrases.
+        cleanup_split = re.split(r'\b(answer the following question|question:)', answer_fragment, flags=re.IGNORECASE)
+        if cleanup_split:
+            answer_fragment = cleanup_split[0].strip()
+    # Final normalization
+    answer_fragment = answer_fragment.lower()
+    answer_fragment = re.sub(r'%', '', answer_fragment)
+    return answer_fragment
+
 
 def evaluate(
     model: ViltForQuestionAnswering,
@@ -58,8 +145,9 @@ def evaluate(
     dataset,
     device: torch.device,
     max_samples: int | None = None,
-    print_examples: int = 0,
+    print_examples: bool = True,
     progress_every: int = 50,
+    model_type: str = "other",
     wandb_run: wandb.sdk.wandb_run.Run | None = None,
 ) -> Tuple[int, int, float, List[Dict[str, Any]]]:
     """Run evaluation loop and return (correct, total, accuracy, examples)."""
@@ -80,30 +168,35 @@ def evaluate(
             if image is None or question is None:
                 continue
             image = image.convert('RGB')
-            
 
-            encoding = processor(image, question, return_tensors="pt")
-            encoding = {k: v.to(device) for k, v in encoding.items()}
+            match model_type:
+                case "AutoModelForVision2Seq":
+                    pred_text = _inference_vision2seq(model, processor, image, question, device)
+                case _:
+                    pred_text = _inference_vilt(model, processor, image, question, device)
 
-            outputs = model(**encoding)
-            pred_idx = outputs.logits.argmax(-1).item()
-            pred_text = model.config.id2label.get(pred_idx, str(pred_idx)).strip().lower()
 
             is_correct = pred_text in labels
             if is_correct:
                 correct += 1
             total += 1
+            
+            
+            if print_examples:
+                print(f"""
+                      Question: {question},
+                      Ground truth answer: {labels},
+                      Prediction: {pred_text},
+                      Is correct?: {is_correct}
+                      
+                      """)
+                examples.append({
+                    "question": question,
+                    "ground_truth": labels,
+                    "prediction": pred_text,
+                    "is_correct": is_correct,
+                })
 
-            if len(examples) < max(print_examples, 0):
-                examples.append(
-                    {
-                        "idx": idx,
-                        "question": question,
-                        "ground_truth": labels,
-                        "prediction": pred_text,
-                        "correct": is_correct,
-                    }
-                )
 
             if progress_every and total % progress_every == 0:
                 acc = correct / total if total else 0.
@@ -128,9 +221,10 @@ def main(cfg: DictConfig) -> None:
     dataset_path: str = cfg.dataset.dataset_path
     split: str = getattr(cfg.eval, "split", "val")
     max_samples: int | None = getattr(cfg.eval, "max_samples", None)
-    print_examples: int = getattr(cfg.eval, "print_examples", 5)
+    print_examples: int = getattr(cfg.eval, "print_examples", True)
     progress_every: int = getattr(cfg.eval, "progress_every", 50)
     wandb_logging_on: bool = getattr(cfg.eval, "wandb_log", False)
+    model_type: str = getattr(cfg.model, "model_type", "other")
 
     print(f"Loading dataset: {dataset_path} [{split}]")
     ds = load_dataset(dataset_path, split=split)
@@ -138,8 +232,19 @@ def main(cfg: DictConfig) -> None:
     # Load model & processor
     model_path: str = cfg.model.model_path
     print(f"Loading model: {model_path}")
-    processor = ViltProcessor.from_pretrained(model_path)
-    model = ViltForQuestionAnswering.from_pretrained(model_path)
+    
+    match model_type:
+        case "AutoModelForVision2Seq":
+            from transformers import AutoModelForVision2Seq, AutoProcessor
+            processor = AutoProcessor.from_pretrained(model_path)
+            model = AutoModelForVision2Seq.from_pretrained(model_path,
+                                                            torch_dtype=torch.bfloat16,
+                                                            _attn_implementation="flash_attention_2" if device == "cuda" else "eager",
+                                                            )
+            model.to(device)
+        case _:
+            processor = ViltProcessor.from_pretrained(model_path)
+            model = ViltForQuestionAnswering.from_pretrained(model_path)
     model.to(device)
 
     if wandb_logging_on:
@@ -161,7 +266,8 @@ def main(cfg: DictConfig) -> None:
         max_samples=max_samples,
         print_examples=print_examples,
         progress_every=progress_every,
-        wandb_run=run if wandb_logging_on else None
+        model_type=model_type,
+        wandb_run=run if wandb_logging_on else None,
     )
     
 

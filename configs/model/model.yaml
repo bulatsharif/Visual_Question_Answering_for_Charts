@@ -1,1 +1,2 @@
-model_path: dandelin/vilt-b32-finetuned-vqa
+model_path: HuggingFaceTB/SmolVLM-500M-Instruct # dandelin/vilt-b32-finetuned-vqa, HuggingFaceTB/SmolVLM-500M-Instruct
+model_type: AutoModelForVision2Seq # AutoModelForVision2Seq, other
