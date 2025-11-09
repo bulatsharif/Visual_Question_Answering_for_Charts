@@ -1,2 +1,3 @@
 .hydra
 *.log
+wandb/

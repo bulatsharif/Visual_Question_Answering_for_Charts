@@ -17,7 +17,7 @@ import numpy as np
 import torch
 from omegaconf import DictConfig, OmegaConf
 import hydra
-
+import wandb
 from datasets import load_dataset
 from transformers import ViltForQuestionAnswering, ViltProcessor
 
@@ -60,6 +60,7 @@ def evaluate(
     max_samples: int | None = None,
     print_examples: int = 0,
     progress_every: int = 50,
+    wandb_run: wandb.sdk.wandb_run.Run | None = None,
 ) -> Tuple[int, int, float, List[Dict[str, Any]]]:
     """Run evaluation loop and return (correct, total, accuracy, examples)."""
     model.eval()
@@ -105,7 +106,9 @@ def evaluate(
                 )
 
             if progress_every and total % progress_every == 0:
-                acc = correct / total if total else 0.0
+                acc = correct / total if total else 0.
+                if wandb_run is not None:   
+                    wandb_run.log({"accuracy": acc, "samples_evaluated": total})
                 print(f"Processed {total} samples | Running accuracy: {acc:.3f}")
 
     accuracy = correct / total if total else 0.0
@@ -127,6 +130,7 @@ def main(cfg: DictConfig) -> None:
     max_samples: int | None = getattr(cfg.eval, "max_samples", None)
     print_examples: int = getattr(cfg.eval, "print_examples", 5)
     progress_every: int = getattr(cfg.eval, "progress_every", 50)
+    wandb_logging_on: bool = getattr(cfg.eval, "wandb_log", False)
 
     print(f"Loading dataset: {dataset_path} [{split}]")
     ds = load_dataset(dataset_path, split=split)
@@ -138,6 +142,16 @@ def main(cfg: DictConfig) -> None:
     model = ViltForQuestionAnswering.from_pretrained(model_path)
     model.to(device)
 
+    if wandb_logging_on:
+        # Set up W&B run
+        run = wandb.init(
+            entity="b-sharipov-innopolis-university",
+            project="chart-vqa-evaluation",
+            config=OmegaConf.to_container(cfg, resolve=True)
+        )
+
+        print(f"Setting up Weights & Biases logging, the Run ID: {run.id}")
+
     # Evaluate
     correct, total, accuracy, examples = evaluate(
         model=model,
@@ -147,7 +161,9 @@ def main(cfg: DictConfig) -> None:
         max_samples=max_samples,
         print_examples=print_examples,
         progress_every=progress_every,
+        wandb_run=run if wandb_logging_on else None
     )
+    
 
     # Report
     report: Dict[str, Any] = {
@@ -159,6 +175,11 @@ def main(cfg: DictConfig) -> None:
         "accuracy": accuracy,
         "examples": examples,
     }
+
+    if wandb_logging_on:
+        run.log({"final_accuracy": accuracy, "correct": correct, "total_samples": total})
+        run.finish()
+
 
     out_path = getattr(cfg.eval, "report_path", "eval_report.json")
     # Hydra changes the working directory to a run dir; saving relative is fine
