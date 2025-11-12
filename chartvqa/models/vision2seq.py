@@ -8,7 +8,10 @@ import re
 
 class Vision2SeqModel(VQAModel):
     def _load_model(self):
-        self.processor = AutoProcessor.from_pretrained(self.model_path)
+        self.processor = AutoProcessor.from_pretrained(
+            self.model_path,
+            padding_side='left'
+        )
         self.model = AutoModelForVision2Seq.from_pretrained(
             self.model_path,
             torch_dtype=torch.bfloat16,
@@ -26,11 +29,16 @@ class Vision2SeqModel(VQAModel):
             ]}
         ]
         
+        
         prompt = self.processor.apply_chat_template(messages, add_generation_prompt=True)
         inputs = self.processor(text=prompt, images=[image], return_tensors="pt").to(self.device)
         
-        generated_ids = self.model.generate(**inputs, max_new_tokens=32)
-        generated_texts = self.processor.batch_decode(generated_ids, skip_special_tokens=True)
+        input_token_len = inputs['input_ids'].shape[1]
+        with torch.no_grad():
+            generated_ids = self.model.generate(**inputs, max_new_tokens=32)
+        
+        new_tokens = generated_ids[:, input_token_len:]
+        generated_texts = self.processor.batch_decode(new_tokens, skip_special_tokens=True)
 
         if not generated_texts:
             return ""
@@ -58,9 +66,13 @@ class Vision2SeqModel(VQAModel):
             padding=True
         ).to(self.device)
         
-        generated_ids = self.model.generate(**inputs, max_new_tokens=32)
+        input_token_len = inputs['input_ids'].shape[1]
+        with torch.no_grad():
+            generated_ids = self.model.generate(**inputs, max_new_tokens=32)
         
-        generated_texts = self.processor.batch_decode(generated_ids, skip_special_tokens=True)
+        new_tokens = generated_ids[:, input_token_len:]
+        generated_texts = self.processor.batch_decode(new_tokens, skip_special_tokens=True)
+        
         if not generated_texts:
             return [""] * len(questions)
 

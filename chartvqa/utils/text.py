@@ -35,23 +35,14 @@ def parse_assistant_response(raw: str) -> str:
         answer_fragment = raw[pos + len(key):].strip()
 
     # Remove a leading comma or period if model added punctuation right after colon
-    answer_fragment = re.sub(r'^[,.:\s]+', '', answer_fragment)
+    answer_fragment = re.sub(r'^[.,:;!?\s]+', '', answer_fragment)
     # If the model echoed the entire instruction again, split on common delimiters.
     # Heuristic: take first sentence/clause before double newline or line break.
     answer_fragment = answer_fragment.split('\n')[0].strip()
     # Remove trailing artifacts like stray prompt words
     # Example pattern: "green.," -> "green"
-    answer_fragment = re.sub(r'[\s]*[.,]+$', '', answer_fragment)
-    # Keep only the first token if it appears to be a single-word answer (common for ChartQA)
-    # but avoid cutting if looks like a phrase containing spaces and digits.
-    simple_match = re.match(r'^[A-Za-z]+$', answer_fragment)
-    if not simple_match:
-        # If sentence contains multiple words, we might still want first word when others look like prompt residue.
-        # Example: "green. answer the following question ..." -> take first word before such phrases.
-        cleanup_split = re.split(r'\b(answer the following question|question:)', answer_fragment, flags=re.IGNORECASE)
-        if cleanup_split:
-            answer_fragment = cleanup_split[0].strip()
+    answer_fragment = re.sub(r'[.,:;!?]+$', '', answer_fragment)
     # Final normalization
-    answer_fragment = answer_fragment.lower()
+    answer_fragment = answer_fragment.strip().lower()
     answer_fragment = re.sub(r'%', '', answer_fragment)
     return answer_fragment
