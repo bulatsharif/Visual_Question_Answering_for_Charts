@@ -1,3 +1,4 @@
 .hydra
 *.log
 wandb/
+eval_report.json
