@@ -42,7 +42,6 @@ def evaluate(
                 continue
 
             pred_texts = model.infer_batch(images, questions)
-            print(pred_texts)
 
             for i in range(len(pred_texts)):
                 pred_text = pred_texts[i]
