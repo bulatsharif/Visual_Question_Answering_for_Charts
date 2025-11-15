@@ -1,0 +1,5 @@
+split: train # leave `None` if you want to train on the whole dataset.
+batch_size: 4
+report_path: train_report.json
+wandb_log: true # set to true to enable Weights & Biases logging
+

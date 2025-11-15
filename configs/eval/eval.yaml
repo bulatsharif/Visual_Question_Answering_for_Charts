@@ -2,7 +2,8 @@ split: val
 print_examples: true # true, false
 progress_every: 1
 batch_size: 4
+max_samples: 500 # set to null to use all samples
 report_path: eval_report.json
-wandb_log: true # set to true to enable Weights & Biases logging
+wandb_log: false # set to true to enable Weights & Biases logging
 metrics:
-  - accuracy
+  - accuracy 

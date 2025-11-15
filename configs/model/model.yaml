@@ -1,2 +1,4 @@
-model_path: HuggingFaceTB/SmolVLM-500M-Instruct # dandelin/vilt-b32-finetuned-vqa, HuggingFaceTB/SmolVLM-500M-Instruct
-model_type: AutoModelForVision2Seq # AutoModelForVision2Seq, other
+model_type: CustomVLM # AutoModelForVision2Seq, other, CustomVLM
+model_name: TiQS # TiQS, TiQM, TiFS. Used for CustomVLM model_type
+model_path: chartvqa/models/TiQS/chartqa-qformer-adapter.pt # dandelin/vilt-b32-finetuned-vqa, HuggingFaceTB/SmolVLM-500M-Instruct, 
+# Note that model_path can depict the `connector` for CustomVLM, but not the model itself. For the experimental models, the Vision and Language backbone are predefined.
