@@ -9,6 +9,7 @@ SMOLLM2_EMBEDDINGS_DIM = 576
 TINYCLIP_EMBEDDINGS_DIM = 256
 
 class AttentionLayer(nn.Module):
+
     def __init__(
         self,
         q_emb_in,
@@ -197,6 +198,14 @@ class TinyCLIPSmolVLM(nn.Module):
         )
         return outputs
 
+    def train(self, mode: bool = True):
+        """
+        Keep frozen components in eval mode even when Trainer toggles .train().
+        """
+        super().train(mode)
+        self.vision.eval()
+        self.lm.eval()
+        return self
 
 
 

@@ -1,5 +1,6 @@
 from ..base import VQAModel
 from .modeling_tiqm import TinyCLIPSmolVLM
+from .prompting import build_prompt
 from transformers import CLIPProcessor, AutoTokenizer
 from typing import List
 from PIL import Image
@@ -51,7 +52,8 @@ class TiQSModel(VQAModel):
             print(f"Loading modalities connector from: {self.model_cfg.model_path}")
             state = torch.load(self.model_cfg.model_path, map_location=self.device)
             self.model.qformer.load_state_dict(state)
-
+        else:
+            print(f"Warning! No connector path provided, using random initialized Q-Former.")
         self.model.to(self.device)
         self.model.eval()
 
@@ -80,7 +82,7 @@ class TiQSModel(VQAModel):
         B = pixel_values.size(0)
 
         # 2) Text: build prompts and tokenize with SmolLM tokenizer
-        prompts = [f"Question: {q}\nAnswer:" for q in questions]
+        prompts = [build_prompt(q) for q in questions]
         tok = self.tokenizer(
             prompts,
             return_tensors="pt",

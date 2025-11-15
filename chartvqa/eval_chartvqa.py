@@ -46,7 +46,7 @@ def main(cfg: DictConfig) -> None:
     device = prepare_device(str(cfg.device))
     print(f"Using device: {device}")
 
-    logger = WandbLogger(cfg)
+    logger = WandbLogger(cfg, section="eval")
 
     try:
        static_info = {"device_name": str(device)}
