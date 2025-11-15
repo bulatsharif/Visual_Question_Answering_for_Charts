@@ -7,8 +7,8 @@ import torch
 class VQAModel(ABC):
     """Abstract class for all VQA models."""
     
-    def __init__(self, model_path: str, device: torch.device):
-        self.model_path = model_path
+    def __init__(self, model_cfg: str, device: torch.device):
+        self.model_cfg = model_cfg
         self.device = device
         self.model = None
         self.processor = None
@@ -42,6 +42,14 @@ class VQAModel(ABC):
         elif model_type == "ViltForQuestionAnswering":
             from .vilt import ViltModel
             return ViltModel(model_cfg.model_path, device)
+        
+        elif model_type == "CustomVLM":
+            if model_cfg.model_name == "TiQS":
+                from .TiQS.TiQSModel import TiQSModel
+                return TiQSModel(model_cfg, device)
+            else:
+                raise NotImplementedError("The asked model is not implemented yet.")
+            
         
         else:
             raise ValueError(f"Unknown model_type: {model_type}")
