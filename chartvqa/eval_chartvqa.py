@@ -60,6 +60,9 @@ def main(cfg: DictConfig) -> None:
     print(f"Loading dataset: {cfg.dataset.dataset_path} [{cfg.eval.split}]")
     ds = load_dataset(cfg.dataset.dataset_path, split=cfg.eval.split)
 
+    if cfg.eval.max_samples is not None:
+        ds = ds.select(range(cfg.eval.max_samples))
+
     print(f"Setting up DataLoader (Batch size: {cfg.eval.batch_size}, Num workers: 4)")
     dataloader = DataLoader(
         ds,
