@@ -73,7 +73,7 @@ def main(cfg: DictConfig) -> None:
     )
 
     print(f"Loading model: {cfg.model.model_path}")
-    model = VQAModel.load_specific_model_from_config(cfg.model, device)
+    model = VQAModel.load_specific_model_from_config(cfg.model, device, wandb_logger=logger if cfg.eval.wandb_log else None)
 
     correct, total, accuracy, examples = evaluate(
         model=model,

@@ -45,7 +45,7 @@ def main(cfg: DictConfig) -> None:
 
     project_root = Path(get_original_cwd())
     print("Loading TiQS model...")
-    model = VQAModel.load_specific_model_from_config(cfg.model, device)
+    model = VQAModel.load_specific_model_from_config(cfg.model, device, wandb_logger=logger)
 
     print("Starting connector training...")
     try:

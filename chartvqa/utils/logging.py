@@ -46,6 +46,18 @@ class WandbLogger:
         artifact = wandb.Artifact(name=name, type=type_name, metadata=metadata)
         artifact.add_file(str(path))
         self.run.log_artifact(artifact)
+    
+    def load_artifact(self, artifact_path: str, type_name: str = "model") -> str:
+        """
+        Loads an artifact from W&B and returns the local path to the downloaded artifact.
+        """
+        if not (self.is_active and self.run):
+            raise RuntimeError("W&B logging is not active; cannot load artifact.")
+
+        api = wandb.Api()
+        artifact = api.artifact(artifact_path, type=type_name)
+        artifact_dir = artifact.download()
+        return artifact_dir
 
     def finish(self):
         """

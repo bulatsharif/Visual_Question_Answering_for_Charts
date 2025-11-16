@@ -49,9 +49,22 @@ class TiQSModel(VQAModel):
 
         # Load trained Q-Former adapter if provided
         if getattr(self.model_cfg, "model_path", None) is not None:
-            print(f"Loading modalities connector from: {self.model_cfg.model_path}")
-            state = torch.load(self.model_cfg.model_path, map_location=self.device)
-            self.model.qformer.load_state_dict(state)
+            model_source = getattr(self.model_cfg, "model_source", "local")
+            if model_source == "wandb":
+                if self.wandb_logger is None:
+                    raise ValueError("wandb_logger must be provided to load model from wandb.")
+                print(f"Loading modalities connector from wandb: {self.model_cfg.model_path}")
+                artifact_dir = self.wandb_logger.load_artifact(self.model_cfg.model_path, type_name="connector")
+                print(f"Downloaded artifact to: {artifact_dir}")
+                state = torch.load(
+                    f"{artifact_dir}/chartqa-qformer-adapter.pt",
+                    map_location=self.device,
+                )
+                self.model.qformer.load_state_dict(state)
+            else:
+                print(f"Loading modalities connector from local path: {self.model_cfg.model_path}")
+                state = torch.load(self.model_cfg.model_path, map_location=self.device)
+                self.model.qformer.load_state_dict(state)
         else:
             print(f"Warning! No connector path provided, using random initialized Q-Former.")
         self.model.to(self.device)

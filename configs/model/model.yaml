@@ -1,5 +1,6 @@
 model_type: CustomVLM # AutoModelForVision2Seq, other, CustomVLM
+model_source: wandb # huggingface, wandb, local
 model_name: TiQS # TiQS, TiQM, TiFS. Used for CustomVLM model_type
-model_path: null # dandelin/vilt-b32-finetuned-vqa, HuggingFaceTB/SmolVLM-500M-Instruct, 
+model_path: b-sharipov-innopolis-university/chart-vqa-training/tiqs-connector:v0 # dandelin/vilt-b32-finetuned-vqa, HuggingFaceTB/SmolVLM-500M-Instruct, 
 # Note that model_path can depict the `connector` for CustomVLM, but not the model itself. For the experimental models, the Vision and Language backbone are predefined.
 # Note: If you specify the path and start training - it will resume from that checkpoint. If you want to start from random weights - set model_path to null.

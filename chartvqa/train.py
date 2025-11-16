@@ -162,6 +162,9 @@ def _build_training_args(train_cfg, output_dir: Path) -> TrainingArguments:
         logging_steps=train_cfg.get("logging_steps", 50),
         save_steps=train_cfg.get("save_steps", 500),
         save_total_limit=train_cfg.get("save_total_limit", 1),
+        save_strategy=train_cfg.get("save_strategy", "steps"),
+        # Critical: avoid safetensors error on tied weights (lm_head <-> embeddings)
+        save_safetensors=train_cfg.get("save_safetensors", False),
         eval_strategy=train_cfg.get("evaluation_strategy", "steps"),
         eval_steps=train_cfg.get("eval_steps", train_cfg.get("save_steps", 500)),
         report_to=train_cfg.get("report_to", None),

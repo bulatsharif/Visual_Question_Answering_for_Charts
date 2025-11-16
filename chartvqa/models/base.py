@@ -7,11 +7,12 @@ import torch
 class VQAModel(ABC):
     """Abstract class for all VQA models."""
     
-    def __init__(self, model_cfg: str, device: torch.device):
+    def __init__(self, model_cfg: str, device: torch.device, wandb_logger=None):
         self.model_cfg = model_cfg
         self.device = device
         self.model = None
         self.processor = None
+        self.wandb_logger = wandb_logger
         # loading of the model and processor are implemented in inherited classes
         self._load_model()
 
@@ -29,7 +30,7 @@ class VQAModel(ABC):
         pass
 
     @staticmethod
-    def load_specific_model_from_config(model_cfg: DictConfig, device: torch.device) -> 'VQAModel':
+    def load_specific_model_from_config(model_cfg: DictConfig, device: torch.device, wandb_logger=None) -> 'VQAModel':
         """
         Creates and returns the instance of the specified model.
         """
@@ -46,7 +47,7 @@ class VQAModel(ABC):
         elif model_type == "CustomVLM":
             if model_cfg.model_name == "TiQS":
                 from .TiQS.TiQSModel import TiQSModel
-                return TiQSModel(model_cfg, device)
+                return TiQSModel(model_cfg, device, wandb_logger=wandb_logger)
             else:
                 raise NotImplementedError("The asked model is not implemented yet.")
             
