@@ -30,7 +30,7 @@ class TiQSModel(VQAModel):
 
         # Vision processor (only used for images → pixel_values)
         self.processor = CLIPProcessor.from_pretrained(
-            "wkcn/TinyCLIP-ViT-39M-16-Text-19M-YFCC15M"
+            "google/siglip-base-patch16-512"
         )
 
         pad_token_id = self.tokenizer.pad_token_id

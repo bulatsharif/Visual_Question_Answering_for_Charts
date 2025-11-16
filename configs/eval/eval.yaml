@@ -1,4 +1,4 @@
-split: val
+split: train
 print_examples: true # true, false
 progress_every: 1
 batch_size: 4

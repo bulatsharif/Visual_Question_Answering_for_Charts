@@ -1,12 +1,15 @@
 
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from transformers import CLIPProcessor, CLIPModel
+from transformers import AutoProcessor, AutoModel
 import torch.nn.functional as F
 import torch.nn as nn
 import torch
 
 SMOLLM2_EMBEDDINGS_DIM = 960
 TINYCLIP_EMBEDDINGS_DIM = 512
+SIGLIP_EMBEDDINGS_DIM = 768
+
 class AttentionLayer(nn.Module):
 
     def __init__(
@@ -140,13 +143,13 @@ class TinyCLIPSmolVLM(nn.Module):
     def __init__(self, tiny_clip=None, qformer=None, smol_model=None, qformer_path=None, map_location="cpu", tiny_clip_processor=None, pad_token_id=2):
         super().__init__()
         
-        tiny_clip = CLIPModel.from_pretrained("wkcn/TinyCLIP-ViT-39M-16-Text-19M-YFCC15M") if tiny_clip is None else tiny_clip
+        tiny_clip = CLIPModel.from_pretrained("google/siglip-base-patch16-512") if tiny_clip is None else tiny_clip
         self.vision = tiny_clip.vision_model
         self.pad_token_id = pad_token_id
         
 
         self.qformer = QFormer(
-            key_embeddings_len=TINYCLIP_EMBEDDINGS_DIM,
+            key_embeddings_len=SIGLIP_EMBEDDINGS_DIM,
             query_embeddings_len=SMOLLM2_EMBEDDINGS_DIM,
             num_heads=12,
             num_layers=4,
