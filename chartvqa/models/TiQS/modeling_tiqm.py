@@ -72,7 +72,6 @@ class AttentionLayer(nn.Module):
         scores = torch.matmul(Q, K.transpose(-2, -1)) / (self.head_dim ** 0.5)
 
         if mask is not None:
-            # mask: 0 for keep, 1 or True for mask out
             scores = scores.masked_fill(mask.bool(), float('-inf'))
 
         attn = F.softmax(scores, dim=-1)  # (batch, heads, q_len, k_len)
@@ -143,7 +142,7 @@ class TinyCLIPSmolVLM(nn.Module):
     def __init__(self, tiny_clip=None, qformer=None, smol_model=None, qformer_path=None, map_location="cpu", tiny_clip_processor=None, pad_token_id=2):
         super().__init__()
         
-        tiny_clip = CLIPModel.from_pretrained("google/siglip-base-patch16-512") if tiny_clip is None else tiny_clip
+        tiny_clip = AutoModel.from_pretrained("google/siglip-base-patch16-512") if tiny_clip is None else tiny_clip
         self.vision = tiny_clip.vision_model
         self.pad_token_id = pad_token_id
         
@@ -194,10 +193,9 @@ class TinyCLIPSmolVLM(nn.Module):
         inputs_embeds = torch.cat([vis_queries, text_embeds], dim=1)  # (B, Nq + L_txt, 576)
 
         # 5) Attention mask
-        if attention_mask is None:
-            text_mask = input_ids.ne(self.pad_token_id).long()
-            vis_mask = torch.ones((B, Nq), dtype=text_mask.dtype, device=input_ids.device)
-            attention_mask = torch.cat([vis_mask, text_mask], dim=1)
+        text_mask = input_ids.ne(self.pad_token_id).long()
+        vis_mask = torch.ones((B, Nq), dtype=text_mask.dtype, device=input_ids.device)
+        attention_mask = torch.cat([vis_mask, text_mask], dim=1)
 
         # 6) Make labels match sequence length
         if labels is not None:
