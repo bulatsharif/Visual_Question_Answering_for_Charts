@@ -5,9 +5,8 @@ import torch.nn.functional as F
 import torch.nn as nn
 import torch
 
-SMOLLM2_EMBEDDINGS_DIM = 576
-TINYCLIP_EMBEDDINGS_DIM = 256
-
+SMOLLM2_EMBEDDINGS_DIM = 960
+TINYCLIP_EMBEDDINGS_DIM = 512
 class AttentionLayer(nn.Module):
 
     def __init__(
