@@ -43,6 +43,10 @@ class VQAModel(ABC):
             from .vilt import ViltModel
             return ViltModel(model_cfg.model_path, device)
         
+        elif model_type == "Florence2":
+            from .florence import Florence2Model
+            return Florence2Model(model_cfg.model_path, device)
+        
         else:
             raise ValueError(f"Unknown model_type: {model_type}")
 
