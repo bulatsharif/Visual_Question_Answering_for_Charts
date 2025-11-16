@@ -22,7 +22,7 @@ class TiQSModel(VQAModel):
         """
         # Text tokenizer (SmolLM2)
         self.tokenizer = AutoTokenizer.from_pretrained(
-            "HuggingFaceTB/SmolLM2-135M-Instruct"
+            "HuggingFaceTB/SmolLM2-360M-Instruct"
         )
         # make sure we have a pad token
         if self.tokenizer.pad_token_id is None:
@@ -30,7 +30,7 @@ class TiQSModel(VQAModel):
 
         # Vision processor (only used for images → pixel_values)
         self.processor = CLIPProcessor.from_pretrained(
-            "wkcn/TinyCLIP-ViT-8M-16-Text-3M-YFCC15M"
+            "wkcn/TinyCLIP-ViT-39M-16-Text-19M-YFCC15M"
         )
 
         pad_token_id = self.tokenizer.pad_token_id

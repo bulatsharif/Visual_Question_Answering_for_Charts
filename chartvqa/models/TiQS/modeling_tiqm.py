@@ -94,9 +94,9 @@ class SimpleQFormerBlock(nn.Module):
         self.norm1 = nn.LayerNorm(dim)
         self.norm2 = nn.LayerNorm(dim)
         self.ffn = nn.Sequential(
-            nn.Linear(dim, 2 * dim),
+            nn.Linear(dim, 4 * dim),
             nn.GELU(),
-            nn.Linear(2 * dim, dim),
+            nn.Linear(4 * dim, dim),
         )
         self.norm3 = nn.LayerNorm(dim)
 
@@ -141,7 +141,7 @@ class TinyCLIPSmolVLM(nn.Module):
     def __init__(self, tiny_clip=None, qformer=None, smol_model=None, qformer_path=None, map_location="cpu", tiny_clip_processor=None, pad_token_id=2):
         super().__init__()
         
-        tiny_clip = CLIPModel.from_pretrained("wkcn/TinyCLIP-ViT-8M-16-Text-3M-YFCC15M") if tiny_clip is None else tiny_clip
+        tiny_clip = CLIPModel.from_pretrained("wkcn/TinyCLIP-ViT-39M-16-Text-19M-YFCC15M") if tiny_clip is None else tiny_clip
         self.vision = tiny_clip.vision_model
         self.pad_token_id = pad_token_id
         
@@ -150,11 +150,10 @@ class TinyCLIPSmolVLM(nn.Module):
             key_embeddings_len=TINYCLIP_EMBEDDINGS_DIM,
             query_embeddings_len=SMOLLM2_EMBEDDINGS_DIM,
             num_heads=12,
-            num_layers=2,
-            num_queries=8
+            num_layers=4,
+            num_queries=16
         )
-        self.lm = smol_model if smol_model is not None else AutoModelForCausalLM.from_pretrained("HuggingFaceTB/SmolLM2-135M-Instruct")
-
+        self.lm = smol_model if smol_model is not None else AutoModelForCausalLM.from_pretrained("HuggingFaceTB/SmolLM2-360M-Instruct")
         # freeze vision + LM
         for p in self.vision.parameters():
             p.requires_grad = False
@@ -163,6 +162,18 @@ class TinyCLIPSmolVLM(nn.Module):
 
         self.vision.eval()
         self.lm.eval()
+        
+        total_number_parameters = 0
+        for p in self.qformer.parameters():
+            total_number_parameters += p.numel()
+        
+        for p in self.lm.parameters():
+            total_number_parameters += p.numel()
+        
+        for p in self.vision.parameters():
+            total_number_parameters += p.numel()
+        
+        print(f"Total number of parameters: {total_number_parameters}")
 
     def forward(self, pixel_values, input_ids=None, labels=None, attention_mask=None):
         # 1) Vision
