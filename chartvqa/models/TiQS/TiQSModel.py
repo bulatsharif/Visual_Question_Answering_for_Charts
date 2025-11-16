@@ -2,6 +2,7 @@ from ..base import VQAModel
 from .modeling_tiqm import TinyCLIPSmolVLM
 from .prompting import build_prompt
 from transformers import CLIPProcessor, AutoTokenizer
+from transformers import AutoProcessor, AutoModel
 from typing import List
 from PIL import Image
 import torch
@@ -24,19 +25,16 @@ class TiQSModel(VQAModel):
         self.tokenizer = AutoTokenizer.from_pretrained(
             "HuggingFaceTB/SmolLM2-360M-Instruct"
         )
-        # make sure we have a pad token
         if self.tokenizer.pad_token_id is None:
             self.tokenizer.pad_token = self.tokenizer.eos_token
 
         # Vision processor (only used for images → pixel_values)
-        self.processor = CLIPProcessor.from_pretrained(
+        self.processor = AutoProcessor.from_pretrained(
             "google/siglip-base-patch16-512"
         )
 
         pad_token_id = self.tokenizer.pad_token_id
 
-        # IMPORTANT: do not pass qformer_path here (class bug),
-        # we will load the Q-Former weights manually.
         self.model = TinyCLIPSmolVLM(
             tiny_clip=None,
             qformer=None,
@@ -70,10 +68,10 @@ class TiQSModel(VQAModel):
         self.model.to(self.device)
         self.model.eval()
 
-        # max tokens to generate for answer
+
         self.max_new_tokens = getattr(self.model_cfg, "max_new_tokens", 8)
 
-    # ----------------- public API -----------------
+
 
     def infer(self, image: Image.Image, question: str) -> str:
         """
