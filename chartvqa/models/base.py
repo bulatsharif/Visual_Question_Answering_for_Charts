@@ -6,12 +6,17 @@ import torch
 
 class VQAModel(ABC):
     """Abstract class for all VQA models."""
-    
-    def __init__(self, model_path: str, device: torch.device):
-        self.model_path = model_path
+    def __init__(self, model_cfg: DictConfig, device: torch.device):
+        self.model_cfg = model_cfg
+        self.model_path: str = model_cfg.model_path
         self.device = device
         self.model = None
         self.processor = None
+        # quantization-related helpers
+        self.quantized: bool = bool(getattr(model_cfg, "quantized", False))
+        self.quant_bits: int = int(getattr(model_cfg, "quant_bits", 0) or 0)
+        self.quant_backend: str | None = getattr(model_cfg, "quant_backend", None)
+
         # loading of the model and processor are implemented in inherited classes
         self._load_model()
 
@@ -37,12 +42,11 @@ class VQAModel(ABC):
         
         if model_type == "AutoModelForVision2Seq":
             from .vision2seq import Vision2SeqModel
-            return Vision2SeqModel(model_cfg.model_path, device)
+            return Vision2SeqModel(model_cfg, device)
         
         elif model_type == "ViltForQuestionAnswering":
             from .vilt import ViltModel
-            return ViltModel(model_cfg.model_path, device)
+            return ViltModel(model_cfg, device)
         
         else:
             raise ValueError(f"Unknown model_type: {model_type}")
-

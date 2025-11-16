@@ -1,2 +1,6 @@
 model_path: HuggingFaceTB/SmolVLM-500M-Instruct # dandelin/vilt-b32-finetuned-vqa, HuggingFaceTB/SmolVLM-500M-Instruct
 model_type: AutoModelForVision2Seq # AutoModelForVision2Seq, other
+
+quantized: false # true, false
+quant_bits: 0 # 4, 8, 0
+quant_backend: None # bnb, gptq, None
