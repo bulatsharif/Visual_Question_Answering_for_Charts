@@ -46,3 +46,11 @@ def parse_assistant_response(raw: str) -> str:
     answer_fragment = answer_fragment.strip().lower()
     answer_fragment = re.sub(r'%', '', answer_fragment)
     return answer_fragment
+
+def parse_assistant_response_florence(raw: str) -> str:
+    """
+    Parse answer from the Florence-2 response.
+    """
+    ans = raw.replace("<s>", "").replace("</s>", "").replace("<pad>", "")
+    ans = ans.replace("<VQA>", "")
+    return ans.strip()

@@ -5,6 +5,7 @@ from omegaconf import DictConfig
 
 from chartvqa.models.base import VQAModel
 from chartvqa.utils.logging import WandbLogger
+from chartvqa.utils.text import normalize_answer
 
 def evaluate(
     model: VQAModel,
@@ -44,8 +45,10 @@ def evaluate(
             pred_texts = model.infer_batch(images, questions)
 
             for i in range(len(pred_texts)):
-                pred_text = pred_texts[i]
+                pred_text_raw = pred_texts[i]
                 labels = labels_batch[i]
+                pred_norm_list = normalize_answer(pred_text_raw)
+                pred_text = pred_norm_list[0] if pred_norm_list else ""
                 is_correct = pred_text in labels
                 if is_correct:
                     correct += 1
@@ -56,9 +59,11 @@ def evaluate(
             total += current_batch_size
 
             if print_examples:
-                pred_text = pred_texts[0]
+                pred_text_raw = pred_texts[0]
                 labels = labels_batch[0]
                 question = questions[0]
+                pred_norm_list = normalize_answer(pred_text_raw)
+                pred_text = pred_norm_list[0] if pred_norm_list else ""
                 is_correct = pred_text in labels
                 print(f"""
                       Question: {question},
