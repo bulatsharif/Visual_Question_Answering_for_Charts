@@ -1,7 +1,8 @@
 defaults:
-  - model: model
+  - model: florence
   - dataset: data
   - eval: eval
+  - train: florence_lora
 
 
 seed: 116

@@ -44,13 +44,15 @@ class VQAModel(ABC):
             from .vilt import ViltModel
             return ViltModel(model_cfg.model_path, device)
         
+        elif model_type == "Florence2":
+            from .florence import Florence2Model
+            return Florence2Model(model_cfg.model_path, device)
         elif model_type == "CustomVLM":
             if model_cfg.model_name == "TiQS":
                 from .TiQS.TiQSModel import TiQSModel
                 return TiQSModel(model_cfg, device, wandb_logger=wandb_logger)
             else:
                 raise NotImplementedError("The asked model is not implemented yet.")
-            
         
         else:
             raise ValueError(f"Unknown model_type: {model_type}")

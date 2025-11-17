@@ -1,0 +1,2 @@
+model_path: HuggingFaceTB/SmolVLM-500M-Instruct
+model_type: AutoModelForVision2Seq
