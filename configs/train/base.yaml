@@ -1,0 +1,36 @@
+train_split: train
+eval_split: val
+checkpoint_dir: outputs/tiqs-qformer
+connector_output_path: chartvqa/models/TiQS/chartqa-qformer-adapter.pt
+
+train_batch_size: 16
+eval_batch_size: 16
+gradient_accumulation_steps: 4
+num_epochs: 6
+learning_rate: 0.0003
+weight_decay: 0.0001
+warmup_ratio: 0.03
+is_fp16: false
+is_bf16: true
+
+logging_steps: 20
+save_steps: 200
+eval_steps: 200
+save_total_limit: 2
+evaluation_strategy: steps
+report_to: wandb
+
+dataloader_num_workers: 4
+gradient_checkpointing: false
+load_best_model_at_end: false
+metric_for_best_model: null
+
+max_train_samples: null
+max_eval_samples: 256
+resume_from_checkpoint: null
+max_train_seconds: null
+
+report_path: train_report.json
+wandb_log: true # set to true to enable Weights & Biases logging
+wandb_artifact_name: tiqs-connector
+wandb_artifact_type: connector
