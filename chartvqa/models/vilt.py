@@ -13,8 +13,8 @@ class ViltModel(VQAModel):
         """
         Download ViLT model and processor.
         """
-        self.processor = ViltProcessor.from_pretrained(self.model_path)
-        self.model = ViltForQuestionAnswering.from_pretrained(self.model_path)
+        self.processor = ViltProcessor.from_pretrained(self.model_cfg.model_path)
+        self.model = ViltForQuestionAnswering.from_pretrained(self.model_cfg.model_path)
         self.model.to(self.device)
 
     def infer(self, image: Image.Image, question: str) -> str:

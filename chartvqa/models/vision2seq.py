@@ -9,9 +9,10 @@ import re
 class Vision2SeqModel(VQAModel):
     def _load_model(self):
         self.processor = AutoProcessor.from_pretrained(
-            self.model_path,
+            self.model_cfg.model_path,
             padding_side='left'
         )
+
         # If quantized configuration is requested, try to use BitsAndBytesConfig
         if getattr(self, "quantized", False) and getattr(self, "quant_bits", 0) in (4, 8) and BitsAndBytesConfig is not None:
             bnb_cfg = BitsAndBytesConfig(
@@ -20,7 +21,7 @@ class Vision2SeqModel(VQAModel):
             )
             # Use device_map so that quantized weights are placed automatically
             self.model = AutoModelForVision2Seq.from_pretrained(
-                self.model_path,
+                self.model_cfg.model_path,
                 quantization_config=bnb_cfg,
                 device_map="auto",
                 trust_remote_code=True,
@@ -70,7 +71,7 @@ class Vision2SeqModel(VQAModel):
             messages = [
                 {"role": "user", "content": [
                     {"type": "image"},
-                    {"type": "text", "text": f"Answer the following question about the image: {question}"}
+                    {"type": "text", "text": f"You are a Vision Language Model specialized in interpreting visual data from chart images. Your task is to analyze the provided chart image and respond to queries with concise answers, usually a single word, number, or short phrase. The charts include a variety of types (e.g., line charts, bar charts) and contain colors, labels, and text. Focus on delivering accurate, succinct answers based on the visual information. Avoid additional explanation unless absolutely necessary. Answer the following question about the image: {question}"}
                 ]}
             ]
             prompts.append(self.processor.apply_chat_template(messages, add_generation_prompt=True))
