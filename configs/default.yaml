@@ -1,8 +1,8 @@
 defaults:
-  - model: florence
+  - model: smolvlm
   - dataset: data
   - eval: eval
-  - train: florence_lora
+  - train: base.yaml
 
 
 seed: 116

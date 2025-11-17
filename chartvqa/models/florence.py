@@ -14,12 +14,12 @@ class Florence2Model(VQAModel):
         Download Florence-2 model and processor.
         """
         self.processor = AutoProcessor.from_pretrained(
-            self.model_path, 
+            self.model_cfg.model_path, 
             trust_remote_code=True
         )
         
         self.model = AutoModelForCausalLM.from_pretrained(
-            self.model_path,
+            self.model_cfg.model_path,
             dtype=torch.float16 if self.device.type == "cuda" else torch.float32,
             trust_remote_code=True,
             attn_implementation="eager"

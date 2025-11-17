@@ -50,7 +50,7 @@ class VQAModel(ABC):
         
         elif model_type == "Florence2":
             from .florence import Florence2Model
-            return Florence2Model(model_cfg.model_path, device)
+            return Florence2Model(model_cfg, device)
         elif model_type == "CustomVLM":
             if model_cfg.model_name == "TiQS":
                 from .TiQS.TiQSModel import TiQSModel

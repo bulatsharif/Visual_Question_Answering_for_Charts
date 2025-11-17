@@ -30,7 +30,7 @@ class Vision2SeqModel(VQAModel):
         # Default (non-quantized) loading
         else:
             self.model = AutoModelForVision2Seq.from_pretrained(
-                self.model_path,
+                self.model_cfg.model_path,
                 torch_dtype=torch.bfloat16,
                 _attn_implementation="sdpa" if self.device.type == "cuda" else "eager",
             ).to(self.device)
