@@ -9,11 +9,11 @@ import re
 class Vision2SeqModel(VQAModel):
     def _load_model(self):
         self.processor = AutoProcessor.from_pretrained(
-            self.model_path,
+            self.model_cfg.model_path,
             padding_side='left'
         )
         self.model = AutoModelForVision2Seq.from_pretrained(
-            self.model_path,
+            self.model_cfg.model_path,
             torch_dtype=torch.bfloat16,
             _attn_implementation="sdpa" if self.device.type == "cuda" else "eager",
         ).to(self.device)

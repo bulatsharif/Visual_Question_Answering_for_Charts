@@ -1,3 +1,5 @@
 .hydra
 *.log
 wandb/
+eval_report.json
+__pycache__

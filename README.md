@@ -43,3 +43,11 @@ PYTHONPATH=. python eval_chartqa.py eval.max_samples=1000 eval.print_examples=10
 
 Config files live in `configs/` and are merged at runtime via Hydra.
 
+## Train TiQS connector
+
+```bash
+cd chartvqa
+PYTHONPATH=. python train_chartqa.py
+```
+
+Training uses the ChartQA training split to finetune only the TiQS connector. Hyperparameters / paths can be overridden via Hydra, e.g. `python train_chartqa.py train.num_epochs=2 train.learning_rate=1e-4`.

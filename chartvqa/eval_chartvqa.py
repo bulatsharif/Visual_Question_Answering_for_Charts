@@ -46,7 +46,7 @@ def main(cfg: DictConfig) -> None:
     device = prepare_device(str(cfg.device))
     print(f"Using device: {device}")
 
-    logger = WandbLogger(cfg)
+    logger = WandbLogger(cfg, section="eval")
 
     try:
        static_info = {"device_name": str(device)}
@@ -60,6 +60,9 @@ def main(cfg: DictConfig) -> None:
     print(f"Loading dataset: {cfg.dataset.dataset_path} [{cfg.eval.split}]")
     ds = load_dataset(cfg.dataset.dataset_path, split=cfg.eval.split)
 
+    if cfg.eval.max_samples is not None:
+        ds = ds.select(range(cfg.eval.max_samples))
+
     print(f"Setting up DataLoader (Batch size: {cfg.eval.batch_size}, Num workers: 4)")
     dataloader = DataLoader(
         ds,
@@ -70,7 +73,7 @@ def main(cfg: DictConfig) -> None:
     )
 
     print(f"Loading model: {cfg.model.model_path}")
-    model = VQAModel.load_specific_model_from_config(cfg.model, device)
+    model = VQAModel.load_specific_model_from_config(cfg.model, device, wandb_logger=logger if cfg.eval.wandb_log else None)
 
     correct, total, accuracy, examples = evaluate(
         model=model,

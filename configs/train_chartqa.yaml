@@ -1,0 +1,7 @@
+defaults:
+  - model: model
+  - dataset: data
+  - train: base
+
+seed: 116
+device: auto
