@@ -1,4 +1,4 @@
-from transformers import AutoModelForVision2Seq, AutoProcessor
+from transformers import AutoModelForVision2Seq, AutoProcessor, BitsAndBytesConfig
 from chartvqa.utils.text import parse_assistant_response
 from typing import List
 from .base import VQAModel
@@ -12,11 +12,28 @@ class Vision2SeqModel(VQAModel):
             self.model_cfg.model_path,
             padding_side='left'
         )
-        self.model = AutoModelForVision2Seq.from_pretrained(
-            self.model_cfg.model_path,
-            torch_dtype=torch.bfloat16,
-            _attn_implementation="sdpa" if self.device.type == "cuda" else "eager",
-        ).to(self.device)
+
+        # If quantized configuration is requested, try to use BitsAndBytesConfig
+        if getattr(self, "quantized", False) and getattr(self, "quant_bits", 0) in (4, 8) and BitsAndBytesConfig is not None:
+            bnb_cfg = BitsAndBytesConfig(
+                load_in_4bit=(self.quant_bits == 4),
+                load_in_8bit=(self.quant_bits == 8),
+            )
+            # Use device_map so that quantized weights are placed automatically
+            self.model = AutoModelForVision2Seq.from_pretrained(
+                self.model_cfg.model_path,
+                quantization_config=bnb_cfg,
+                device_map="auto",
+                trust_remote_code=True,
+            )
+
+        # Default (non-quantized) loading
+        else:
+            self.model = AutoModelForVision2Seq.from_pretrained(
+                self.model_path,
+                torch_dtype=torch.bfloat16,
+                _attn_implementation="sdpa" if self.device.type == "cuda" else "eager",
+            ).to(self.device)
 
     def infer(self, image: Image.Image, question: str) -> str:
         """
