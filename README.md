@@ -92,7 +92,7 @@ The training report is written to `train.report_path` (default `train_report.jso
 `train_florence.py` provides a LoRA fine-tuning path for Florence-2:
 
 ```bash
-python -m chartvqa.train_florence.py model=florence train=florence_lora
+python -m chartvqa.train_florence model=florence train=florence_lora
 ```
 
 The script loads Florence-2 with the appropriate processor, applies the LoRA adapter configuration from `train.florence_lora`, and trains with a custom `Seq2SeqTrainer` that supports mixed precision, generation during eval callbacks, and W&B logging.
