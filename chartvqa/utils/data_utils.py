@@ -1,3 +1,11 @@
+"""
+Data collators and evaluation collate helpers.
+
+This module offers `ChartQADataCollator` for model training and a
+lightweight `collate_fn_eval` for creating validation batches with
+normalized labels.
+"""
+
 import torch
 from typing import List, Dict, Any
 from transformers import ProcessorMixin

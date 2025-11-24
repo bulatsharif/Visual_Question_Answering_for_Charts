@@ -1,3 +1,12 @@
+"""
+Florence-2 model adapter.
+
+Provides a `Florence2Model` wrapper that integrates the Florence-2
+processor and causal LM into the common `VQAModel` interface used by the
+project. The implementation supports download via HF `from_pretrained` and
+post-processing logic for Florence's VQA task.
+"""
+
 from transformers import AutoProcessor, AutoModelForCausalLM
 from typing import List
 from PIL import Image

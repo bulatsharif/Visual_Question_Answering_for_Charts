@@ -1,3 +1,11 @@
+"""
+Training helpers for ChartVQA connectors.
+
+This module exposes utility classes and functions used by training scripts
+to prepare datasets, build Trainer arguments, and run connector training
+for TinyCLIP/SmolLM based models (TiQS connector) on the ChartQA dataset.
+"""
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -16,6 +24,10 @@ from .utils.preprocess_dataset import map_dataset_for_tixs, preprocess_for_tixs
 class VLMDataCollator:
     """
     Data collator for TinyCLIP + SmolLM connectors.
+
+    Implements padding and tensor conversion to produce a batch suitable
+    for HuggingFace `Trainer` usage with image (pixel_values), input ids,
+    labels and attention masks.
     """
 
     def __init__(self, tokenizer):
@@ -97,6 +109,12 @@ class VLMDataCollator:
 
 
 def _resolve_path(path_like: Union[str, Path], project_root: Path) -> Path:
+    """Resolve a possibly relative path to an absolute Path using `project_root`.
+
+    If `path_like` is already absolute, it is returned unchanged. This
+    helper is used to normalize checkpoint and output paths used in the
+    training configuration.
+    """
     path = Path(path_like)
     if not path.is_absolute():
         path = project_root / path
@@ -112,6 +130,12 @@ def _prepare_chartqa_splits(
     max_train_samples: Optional[int],
     max_eval_samples: Optional[int],
 ) -> Tuple[Any, Optional[Any]]:
+    """Load and prepare ChartQA dataset splits for training and evaluation.
+
+    This uses `map_dataset_for_tixs` and `preprocess_for_tixs` to turn raw
+    dataset entries into the format expected by the connector training
+    code (including pixel values and tokenized labels).
+    """
     dataset_dict = load_dataset(dataset_path)
     dataset_dict = map_dataset_for_tixs(
         dataset_dict,
@@ -147,6 +171,10 @@ def _prepare_chartqa_splits(
 
 
 def _build_training_args(train_cfg, output_dir: Path) -> TrainingArguments:
+    """Create a Transformers `TrainingArguments` instance from the config.
+
+    The returned object is ready for use by the HuggingFace `Trainer`.
+    """
     return TrainingArguments(
         output_dir=str(output_dir),
         overwrite_output_dir=True,
@@ -177,6 +205,11 @@ def _build_training_args(train_cfg, output_dir: Path) -> TrainingArguments:
 
 
 def _save_connector_weights(model, output_path: Path):
+    """Save Q-Former connector weights to disk.
+
+    This function persists the `qformer` weights from a model instance as
+    a single state dict file at `output_path`.
+    """
     output_path.parent.mkdir(parents=True, exist_ok=True)
     torch.save(model.qformer.state_dict(), output_path)
 

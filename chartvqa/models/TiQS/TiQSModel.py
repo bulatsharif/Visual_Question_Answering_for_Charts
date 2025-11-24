@@ -1,3 +1,11 @@
+"""
+TiQS model adapter: TinyCLIP + Q-Former + SmolLM connector.
+
+This module implements a `VQAModel` that loads a TinyCLIP-style vision
+backbone, a Q-Former for visual queries and a SmolLM causal language
+model to generate short answers for chart questions.
+"""
+
 from ..base import VQAModel
 from .modeling_tiqm import TinyCLIPSmolVLM
 from .prompting import build_prompt

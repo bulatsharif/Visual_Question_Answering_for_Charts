@@ -1,3 +1,13 @@
+"""
+Base model definitions for VQA models used by the project.
+
+This module defines the `VQAModel` abstract base class which establishes
+the interface for model implementations (e.g., `Vision2SeqModel`,
+`Florence2Model`, `ViltModel`, `TiQSModel`). Concrete subclasses are
+expected to implement `_load_model` to initialize weights/processors and
+`infer_batch` to run batched inference.
+"""
+
 from abc import ABC, abstractmethod
 from omegaconf import DictConfig
 from typing import List

@@ -1,3 +1,12 @@
+"""
+ViLT model adapter.
+
+This module contains an adapter `ViltModel` that wraps HuggingFace's
+ViLT model and processor implementations to implement the `VQAModel`
+interface used in the project. It performs preprocessing, inference and
+post-processing to return short textual answers.
+"""
+
 from transformers import ViltForQuestionAnswering, ViltProcessor
 from .base import VQAModel
 from typing import List

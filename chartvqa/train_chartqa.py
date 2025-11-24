@@ -1,3 +1,11 @@
+"""
+Entry point for TiQS connector training on ChartQA.
+
+This module exposes a Hydra-driven `main` responsible for loading the
+configured model and dataset, running connector training and persisting a
+JSON training summary and the connector artifact.
+"""
+
 import json
 from pathlib import Path
 
@@ -25,6 +33,13 @@ def _json_default(obj):
 
 @hydra.main(version_base="1.3", config_path="../configs", config_name="train_chartqa")
 def main(cfg: DictConfig) -> None:
+    """Hydra entrypoint used to train a TiQS connector.
+
+    The Hydra `cfg` drives model selection, dataset, and training
+    hyperparameters. The function logs hardware info (W&B), trains a
+    connector if `CustomVLM` is selected and writes a JSON summary on
+    completion.
+    """
     print("Resolved config:\n" + OmegaConf.to_yaml(cfg))
 
     set_seed(int(cfg.seed))

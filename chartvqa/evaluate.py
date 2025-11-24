@@ -1,3 +1,11 @@
+"""
+Evaluation utilities for model inference.
+
+This module provides the `evaluate` helper that executes batched model
+inference, computes simple accuracy metrics, logs progress to a configured
+logger and returns a small list of example predictions for inspection.
+"""
+
 import torch
 import time
 from typing import Any, Dict, List, Tuple
@@ -14,8 +22,17 @@ def evaluate(
     eval_cfg: DictConfig,
     logger: WandbLogger
 ) -> Tuple[int, int, float, List[Dict[str, Any]]]:
-    """
-    Evaluates the model on the dataset with logging.
+    """Evaluate a VQA model using a DataLoader and return metrics.
+
+    This function will iterate over the `dataloader`, call the model's
+    `infer_batch` implementation, compute accuracy against normalized
+    ground-truth labels and log interim metrics to the provided W&B
+    compatible logger instance when `eval_cfg.print_examples` or
+    `eval_cfg.progress_every` are set.
+
+    Returns a tuple of `(correct, total, accuracy, examples)` where
+    `examples` is a list of dictionaries with sample-level predictions
+    for inspection.
     """
     model.model.eval()
     correct = 0

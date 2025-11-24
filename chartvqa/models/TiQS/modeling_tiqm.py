@@ -1,4 +1,11 @@
+"""
+TinyCLIP + Q-Former + SmolLM modeling components.
 
+This module contains lightweight model implementations used for the
+TiQS connector: a small Q-Former, attention layers and a `TinyCLIPSmolVLM`
+assembly that combines a vision encoder, Q-Former and a causal language
+model for end-to-end training of the connector.
+"""
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from transformers import CLIPProcessor, CLIPModel
 from transformers import AutoProcessor, AutoModel

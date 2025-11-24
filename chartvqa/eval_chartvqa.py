@@ -1,3 +1,11 @@
+"""
+Evaluation entrypoint for the ChartVQA project.
+
+This module contains a Hydra-driven `main` that loads a configured model,
+dataset, and runs evaluation, saving a summary report. It also exposes a
+`collate_fn_eval` helper to create batches for validation/evaluation.
+"""
+
 import json
 import os
 import hydra
@@ -40,6 +48,12 @@ def collate_fn_eval(batch_items):
 
 @hydra.main(version_base="1.3", config_path="../configs", config_name="default")
 def main(cfg: DictConfig) -> None:
+    """Hydra entry point for running a model evaluation.
+
+    The configuration controls model selection via `cfg.model`, the dataset
+    via `cfg.dataset` and evaluation behavior via `cfg.eval`. Results are
+    written to `cfg.eval.report_path` and to the configured W&B run if enabled.
+    """
     print("Resolved config:\n" + OmegaConf.to_yaml(cfg))
 
     set_seed(int(cfg.seed))

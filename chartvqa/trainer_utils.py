@@ -1,3 +1,12 @@
+"""
+Custom Trainer utilities for the project.
+
+This module contains wrappers and callbacks used during training, including
+`PeftModelWrapper` to adapt PEFT-wrapped models to the `VQAModel` interface
+and `EvaluationCallback` which runs a validation pass after each epoch and
+logs the results.
+"""
+
 import torch
 from torch.utils.data import DataLoader
 from transformers import TrainerCallback

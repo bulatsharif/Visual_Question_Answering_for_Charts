@@ -1,3 +1,11 @@
+"""
+Training utilities for Florence-2 fine-tuning.
+
+This module defines a custom `FlorenceTrainer` that adapts Transformers'
+`Seq2SeqTrainer` behavior for Florence-style models and a `main` function
+to be used with Hydra for training with LoRA/PEFT configurations.
+"""
+
 import hydra
 import torch
 from omegaconf import DictConfig, OmegaConf
@@ -84,6 +92,11 @@ class FlorenceTrainer(Seq2SeqTrainer):
 
 @hydra.main(version_base="1.3", config_path="../configs", config_name="default")
 def main(cfg: DictConfig) -> None:
+    """Hydra-driven training entry point for Florence-2.
+
+    Loads a Florence-2 model and processor, applies PEFT/LoRA configuration,
+    and runs training using the `FlorenceTrainer` defined in this module.
+    """
     print("Resolved config:\n" + OmegaConf.to_yaml(cfg))
     set_seed(int(cfg.seed))
     device = prepare_device(str(cfg.device))

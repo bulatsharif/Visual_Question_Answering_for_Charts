@@ -1,3 +1,11 @@
+"""
+Simple W&B logging wrapper utilities.
+
+This module provides a `WandbLogger` helper to centralize WandB
+session creation, logging and artifact loading to keep the rest of the
+project code clean and testable.
+"""
+
 import wandb
 from omegaconf import DictConfig, OmegaConf
 

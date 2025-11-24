@@ -1,3 +1,12 @@
+"""
+Vision2Seq model interface implementation.
+
+This module implements `Vision2SeqModel`, a `VQAModel` wrapper around
+`AutoModelForVision2Seq` and the corresponding processor. It supports
+quantized (bitsandbytes) and non-quantized loading paths and exposes
+`infer`/`infer_batch` methods for single and batched inference.
+"""
+
 from transformers import AutoModelForVision2Seq, AutoProcessor, BitsAndBytesConfig
 from chartvqa.utils.text import parse_assistant_response
 from typing import List

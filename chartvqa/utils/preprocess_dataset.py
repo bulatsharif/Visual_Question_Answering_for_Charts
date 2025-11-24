@@ -1,3 +1,12 @@
+"""
+Dataset preprocessing helpers used by training/test pipelines.
+
+Exports `map_dataset_for_tixs` which maps preprocessing functions over
+datasets using `datasets.Dataset.map` with multiple processes and
+`preprocess_for_tixs` which converts raw ChartQA examples to the format
+expected by the training connectors (pixel_values, input_ids, labels).
+"""
+
 import torch
 from datasets import DatasetDict
 import os
@@ -30,6 +39,12 @@ def map_dataset_for_tixs(dataset, preprocessor, map_fn_kwargs):
 
 
 def preprocess_for_tixs(example, **kwargs):
+    """Preprocess a single example for the TiQS connector training.
+
+    Returns a dict containing `pixel_values`, `input_ids` and `labels`.
+    The label tensor is offset such that the text prompt tokens are
+    ignored (set to -100) during loss computation.
+    """
 
     tiny_clip_processor = kwargs["processor"]
     smol_tokenizer = kwargs["tokenizer"]

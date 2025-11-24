@@ -1,3 +1,11 @@
+"""
+Text processing helpers for ChartVQA.
+
+Provides utilities for normalizing and parsing answers produced by the
+various model types used in the project. These ensure predictions and
+labels are compared in a robust, case-insensitive way.
+"""
+
 import re
 from typing import Any, List
 
