@@ -48,8 +48,7 @@ Because Hydra writes outputs under a timestamped working directory, set paths in
 Run evaluation from the repository root:
 
 ```bash
-cd chartvqa
-PYTHONPATH=. python eval_chartvqa.py
+python -m chartvqa.eval_chartvqa
 ```
 
 The script loads ChartQA via `datasets`, builds a dataloader, instantiates the requested model, and reports accuracy with optional example printing.
