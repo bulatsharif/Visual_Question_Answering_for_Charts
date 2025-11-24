@@ -70,8 +70,7 @@ A JSON summary is also written locally to the path from `eval.report_path` (defa
 Use `train_chartqa.py` to fine-tune the TiQS connector (CustomVLM) on ChartQA:
 
 ```bash
-cd chartvqa
-PYTHONPATH=. python train_chartqa.py
+python -m chartvqa.train_chartqa
 ```
 
 The runner seeds the job, prepares the device, downloads the configured model, and then calls `train_model` to launch a Hugging Face `Trainer` with ChartQA splits, a custom data collator, and optional evaluation.
@@ -93,8 +92,7 @@ The training report is written to `train.report_path` (default `train_report.jso
 `train_florence.py` provides a LoRA fine-tuning path for Florence-2:
 
 ```bash
-cd chartvqa
-PYTHONPATH=. python train_florence.py model=florence train=florence_lora
+python -m chartvqa.train_florence.py model=florence train=florence_lora
 ```
 
 The script loads Florence-2 with the appropriate processor, applies the LoRA adapter configuration from `train.florence_lora`, and trains with a custom `Seq2SeqTrainer` that supports mixed precision, generation during eval callbacks, and W&B logging.
